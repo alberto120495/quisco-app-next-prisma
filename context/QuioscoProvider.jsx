@@ -42,6 +42,7 @@ function QuioscoProvider({ children }) {
         handleClickCategoria,
         categoriaActual,
         handleSetProducto,
+        producto,
         modal,
         handleChangeModal,
       }}
