@@ -4,7 +4,7 @@ import { formatearDinero } from "../helpers";
 import useQuiosco from "../hooks/useQuiosco";
 
 function ModalProducto() {
-  const { producto, handleChangeModal } = useQuiosco();
+  const { producto, handleChangeModal, handleAgregarPedido } = useQuiosco();
   const [cantidad, setCantidad] = useState(1);
   return (
     <div className="md:flex gap-10">
@@ -88,6 +88,16 @@ function ModalProducto() {
             </svg>
           </button>
         </div>
+
+        <button
+          type="button"
+          className="bg-indigo-600 hover:bg-indigo-800 px-5 mt-5 text-white font-bold py-2 uppercase rounded"
+          onClick={() => {
+            handleAgregarPedido({ ...producto, cantidad });
+          }}
+        >
+          Añadir al pedido
+        </button>
       </div>
     </div>
   );
