@@ -1,5 +1,6 @@
-import axios from "axios";
 import { useState, useEffect, createContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const QuiscoContext = createContext();
 
@@ -37,7 +38,22 @@ function QuioscoProvider({ children }) {
   };
 
   const handleAgregarPedido = ({ categoriaId, imagen, ...producto }) => {
-    setPedido([...pedido, producto]);
+    if (pedido.some((productoState) => productoState.id === producto.id)) {
+      //Actualizar cantidad
+      const pedidoActualizado = pedido.map((productoState) =>
+        productoState.id === producto.id ? producto : productoState
+      );
+      setPedido(pedidoActualizado);
+      toast.success("Guardado Correctamente", {
+        autoClose: 1500,
+      });
+    } else {
+      setPedido([...pedido, producto]);
+      toast.success(`${producto.nombre} agregado al pedido.`, {
+        autoClose: 1500,
+      });
+    }
+    setModal(false);
   };
 
   return (
@@ -51,6 +67,7 @@ function QuioscoProvider({ children }) {
         modal,
         handleChangeModal,
         handleAgregarPedido,
+        pedido,
       }}
     >
       {children}
