@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -10,6 +11,8 @@ function QuioscoProvider({ children }) {
   const [producto, setProducto] = useState({});
   const [modal, setModal] = useState(false);
   const [pedido, setPedido] = useState([]);
+
+  const router = useRouter();
 
   const obtenerCategorias = async () => {
     const { data } = await axios("api/categorias");
@@ -27,6 +30,7 @@ function QuioscoProvider({ children }) {
   const handleClickCategoria = (id) => {
     const categoria = categorias.filter((cat) => cat.id === id);
     setCategoriaActual(categoria[0]);
+    router.push("/");
   };
 
   const handleSetProducto = (producto) => {
@@ -37,7 +41,7 @@ function QuioscoProvider({ children }) {
     setModal(!modal);
   };
 
-  const handleAgregarPedido = ({ categoriaId, imagen, ...producto }) => {
+  const handleAgregarPedido = ({ categoriaId, ...producto }) => {
     if (pedido.some((productoState) => productoState.id === producto.id)) {
       //Actualizar cantidad
       const pedidoActualizado = pedido.map((productoState) =>
@@ -56,6 +60,21 @@ function QuioscoProvider({ children }) {
     setModal(false);
   };
 
+  const handleEditarCantidades = (id) => {
+    const productoActualizar = pedido.filter(
+      (productoState) => productoState.id === id
+    );
+    setProducto(productoActualizar[0]);
+    setModal(!modal);
+  };
+
+  const handleEliminarProducto = (id) => {
+    const pedidoActualizado = pedido.filter(
+      (productoState) => productoState.id !== id
+    );
+    setPedido(pedidoActualizado);
+  };
+
   return (
     <QuiscoContext.Provider
       value={{
@@ -68,6 +87,8 @@ function QuioscoProvider({ children }) {
         handleChangeModal,
         handleAgregarPedido,
         pedido,
+        handleEditarCantidades,
+        handleEliminarProducto,
       }}
     >
       {children}
