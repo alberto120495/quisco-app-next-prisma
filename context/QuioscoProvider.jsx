@@ -88,9 +88,29 @@ function QuioscoProvider({ children }) {
 
   const colocarOrden = async (e) => {
     e.preventDefault();
-    console.log("pedido");
-    console.log(pedido);
-    console.log(nombre);
+    try {
+      await axios.post("/api/ordenes", {
+        pedido,
+        nombre,
+        total,
+        fecha: Date.now().toString(),
+      });
+
+      //Resetear la app
+      setCategoriaActual(categorias[0]);
+      setPedido([]);
+      setNombre("");
+      setTotal(0);
+
+      toast.success("Orden enviada correctamente", {
+        autoClose: 1500,
+      });
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } catch (error) {
+      console.log("(╯°□°）╯︵ ┻━┻ :", error);
+    }
   };
 
   return (
